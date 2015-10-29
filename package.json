@@ -1,0 +1,25 @@
+{
+  "name": "lybica-platform",
+  "version": "1.0.0",
+  "description": "backed services for lybica project",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lybicat/lybica-platform.git"
+  },
+  "author": "feiyuw",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lybicat/lybica-platform/issues"
+  },
+  "homepage": "https://github.com/lybicat/lybica-platform#readme",
+  "dependencies": {
+    "restify": "^4.0.3"
+  },
+  "devDependencies": {
+    "mocha": "^2.3.3"
+  }
+}

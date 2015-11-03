@@ -1,5 +1,9 @@
 var mongoose = require('mongoose');
 
-var Task = mongoose.model('task', {
 
+module.exports.Task = mongoose.model('task', {
+    id: String,
+    planid: String,
+    triggerid: String,
+    triggerat: Date
 });

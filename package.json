@@ -19,7 +19,8 @@
   "homepage": "https://github.com/lybicat/lybica-platform#readme",
   "dependencies": {
     "mongoose": "^4.2.3",
-    "restify": "^4.0.3"
+    "restify": "^4.0.3",
+    "restify-routes": "^0.1.2"
   },
   "devDependencies": {
     "mocha": "^2.3.3"

@@ -1,7 +1,7 @@
 var restify = require('restify');
 var mongoose = require('mongoose');
 var config = require('./config');
-var models = require('./models');
+var restifyRoutes = require('restify-routes');
 
 var server = restify.createServer({
     name: 'lybica',
@@ -17,10 +17,7 @@ server.use(function(req, res, next) {
     return next();
 });
 
-server.get('/api/task/:id', function(req, res, next) {
-    res.send({id: req.params.id});
-    return next();
-});
+restifyRoutes.set(server, __dirname + '/routes');
 
 mongoose.connect(config.DB_URL);
 

@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 
 // tasks
-module.exports.Task = mongoose.model('task', {
+var taskSchema = mongoose.Schema({
     id: String,
     planid: String,
     triggerid: String,
@@ -11,8 +11,10 @@ module.exports.Task = mongoose.model('task', {
     result: {
     }
 });
+taskSchema.index({id: 1});
+module.exports.Task = mongoose.model('task', taskSchema);
 
 
 // remote actions
-module.exports.Action = mongoose.model('action', {
-});
+var actionSchema = mongoose.Schema({});
+module.exports.Action = mongoose.model('action', actionSchema);

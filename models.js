@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 
 
+// tasks
 module.exports.Task = mongoose.model('task', {
     id: String,
     planid: String,
@@ -9,4 +10,9 @@ module.exports.Task = mongoose.model('task', {
     status: String,
     result: {
     }
+});
+
+
+// remote actions
+module.exports.Action = mongoose.model('action', {
 });

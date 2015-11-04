@@ -5,5 +5,8 @@ module.exports.Task = mongoose.model('task', {
     id: String,
     planid: String,
     triggerid: String,
-    triggerat: Date
+    triggerat: Date,
+    status: String,
+    result: {
+    }
 });

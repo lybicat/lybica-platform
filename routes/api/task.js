@@ -12,6 +12,7 @@ module.exports = {
         post: function(req, res, next) {
             var task = new Task();
             if (req.body.triggerby) task.triggerby = req.body.triggerby;
+            if (req.body.build) task.build = req.body.build;
             task.caseset = req.body.caseset;
             task.device = req.body.device;
             task.save(function(err, t) {

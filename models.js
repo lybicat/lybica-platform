@@ -11,6 +11,7 @@ var taskSchema = mongoose.Schema({
     started: {type: Boolean, default: false},
     passed: {type: Boolean, default: false},
     done: {type: Boolean, default: false},
+    build: {type: String, default: ''}, // TODO
     caseset: [String],
     device: [String],
     result: Mixed

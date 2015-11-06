@@ -20,10 +20,11 @@ describe('/api/tasks', function() {
     });
 
     it('POST /api/tasks create the new task', function(done) {
-        client.post('/api/tasks', {caseset: ['c1'], device: ['d1']}, function(err, req, res, obj) {
+        client.post('/api/tasks', {caseset: ['c1'], device: ['d1'], build: '12345'}, function(err, req, res, obj) {
             expect(err).to.eql(null);
             expect(res.statusCode).to.eql(200);
             Task.findOne({}, function(err, t) {
+                expect(t.build).to.eql('12345');
                 expect(t.caseset[0]).to.eql('c1');
                 expect(t.device[0]).to.eql('d1');
                 done();

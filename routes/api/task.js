@@ -2,6 +2,13 @@ var Task = require('../../models').Task;
 
 module.exports = {
     '/api/tasks': {
+        get: function(req, res, next) {
+            Task.find({done: false}, function(err, tasks) {
+                if (err) return next(err);
+                res.send(tasks);
+                return next();
+            });
+        },
         post: function(req, res, next) {
             var task = new Task();
             if (req.body.triggerby) task.triggerby = req.body.triggerby;
@@ -16,7 +23,7 @@ module.exports = {
     },
     '/api/tasks/:id/result': {
         post: function(req, res, next) {
-            Task.findOne({_id: req.params.id}, function(err, task) {
+            Task.findById(req.params.id, function(err, task) {
                 if (err) {
                     return next(err);
                 } else if (task === null) {
@@ -28,6 +35,7 @@ module.exports = {
                     if (task.result.passed === true) {
                         task.passed = true;
                     }
+                    task.done = true;
                     task.save(function(err, t) {
                         if (err) return next(err);
                         res.send(200, {});

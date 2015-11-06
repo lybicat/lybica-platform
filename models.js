@@ -10,6 +10,7 @@ var taskSchema = mongoose.Schema({
     triggerat: {type: Date, default: Date.now},
     started: {type: Boolean, default: false},
     passed: {type: Boolean, default: false},
+    done: {type: Boolean, default: false},
     caseset: [String],
     device: [String],
     result: Mixed

@@ -19,12 +19,20 @@ describe('/api/tasks', function() {
         });
     });
 
-    it('GET /api/tasks/:id return the task infomation', function() {
-        // TODO
+    it('POST /api/tasks create the new task', function(done) {
+        client.post('/api/tasks', {caseset: ['c1'], device: ['d1']}, function(err, req, res, obj) {
+            expect(err).to.eql(null);
+            expect(res.statusCode).to.eql(200);
+            Task.findOne({}, function(err, t) {
+                expect(t.caseset[0]).to.eql('c1');
+                expect(t.device[0]).to.eql('d1');
+                done();
+            });
+        });
     });
 
     it('POST /api/tasks/:id/result to not found task return 404', function(done) {
-        client.post('/api/tasks/a1c98e/result', {result: 'PASS'}, function(err, req, res, obj) {
+        client.post('/api/tasks/563c0e4d6dd4bb864dc20565/result', {result: 'PASS'}, function(err, req, res, obj) {
             expect(err).not.to.eql(null);
             expect(res.statusCode).to.eql(404);
             done();
@@ -32,14 +40,15 @@ describe('/api/tasks', function() {
     });
 
     it('POST /api/tasks/:id/result to exist task return 200', function(done) {
-        var task = new Task({id: 'a1c98e'});
-        task.save(function(err) {
+        var task = new Task();
+        task.save(function(err, t) {
             expect(err).to.eql(null);
-            client.post('/api/tasks/a1c98e/result', {result: 'PASS'}, function(err, req, res, obj) {
+            client.post('/api/tasks/' + t._id + '/result', {passed: true}, function(err, req, res, obj) {
                 expect(err).to.eql(null);
                 expect(res.statusCode).to.eql(200);
-                Task.findOne({id: 'a1c98e'}, function(err, t) {
-                    expect(t.result.result).to.eql('PASS');
+                Task.findOne({_id: t._id}, function(err, t) {
+                    expect(t.result.passed).to.eql(true);
+                    expect(t.passed).to.eql(true);
                     done();
                 });
             });

@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/lybicat/lybica-platform#readme",
   "dependencies": {
-    "mongoose": "^4.2.3",
+    "lodash": "^3.10.1",
+    "mongodb": "^2.0.47",
+    "mongoskin": "^2.0.3",
     "restify": "^4.0.3",
     "restify-routes": "^0.1.2"
   },

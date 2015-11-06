@@ -1,5 +1,3 @@
-'use strict';
-
 var restify = require('restify');
 var mongoose = require('mongoose');
 var config = require('./config');
@@ -23,6 +21,6 @@ restifyRoutes.set(server, __dirname + '/routes');
 
 mongoose.connect(config.DB_URL);
 
-server.listen(config.PORT || 3000, function() {
+server.listen(config.PORT, function() {
     console.log('%s listening at %s', server.name, server.url);
 });

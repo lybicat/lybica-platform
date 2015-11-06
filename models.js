@@ -1,17 +1,20 @@
 var mongoose = require('mongoose');
+var ObjectId = mongoose.SchemaTypes.ObjectId;
+var Mixed = mongoose.SchemaTypes.Mixed;
 
 
 // tasks
 var taskSchema = mongoose.Schema({
-    id: String,
-    planid: String,
-    triggerid: String,
-    triggerat: Date,
-    status: String,
-    result: {
-    }
+    //planid: ObjectId, //TODO
+    triggerby: {type: String, default: 'SYSTEM'},
+    triggerat: {type: Date, default: Date.now},
+    started: {type: Boolean, default: false},
+    passed: {type: Boolean, default: false},
+    caseset: [String],
+    device: [String],
+    result: Mixed
 });
-taskSchema.index({id: 1});
+//taskSchema.index({planid: 1}); //TODO
 module.exports.Task = mongoose.model('task', taskSchema);
 
 

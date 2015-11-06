@@ -13,10 +13,7 @@ describe('/api/actions', function() {
     });
 
     afterEach(function(done) {
-        Action.remove({}, function(err) {
-            expect(err).to.eql(null);
-            done();
-        });
+        Action.remove(done);
     });
 
     it('GET /api/actions return all remote actions', function(done) {

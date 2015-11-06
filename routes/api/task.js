@@ -13,6 +13,7 @@ module.exports = {
             var task = new Task();
             if (req.body.triggerby) task.triggerby = req.body.triggerby;
             if (req.body.build) task.build = req.body.build;
+            task.actions = req.body.actions;
             task.caseset = req.body.caseset;
             task.device = req.body.device;
             task.save(function(err, t) {

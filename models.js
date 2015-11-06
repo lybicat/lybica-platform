@@ -14,6 +14,7 @@ var taskSchema = mongoose.Schema({
     build: {type: String, default: ''}, // TODO
     caseset: [String],
     device: [String],
+    actions: [String],
     result: Mixed
 });
 //taskSchema.index({planid: 1}); //TODO

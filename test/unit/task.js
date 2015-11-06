@@ -73,6 +73,35 @@ describe('/api/tasks', function() {
         });
     });
 
+    it('GET /api/tasks/queued return [xxx] when unstarted tasks in queue', function(done) {
+        var task = new Task();
+        task.caseset = ['c1'];
+        task.device = ['d1'];
+        task.save().then(function() {
+            client.get('/api/tasks/queued', function(err, req, res, obj) {
+                expect(err).to.eql(null);
+                expect(res.statusCode).to.eql(200);
+                expect(obj.length).to.eql(1);
+                done();
+            });
+        });
+    });
+
+    it('GET /api/tasks/queued return [] when only started task in queue', function(done) {
+        var task = new Task();
+        task.caseset = ['c1'];
+        task.device = ['d1'];
+        task.started = true;
+        task.save().then(function() {
+            client.get('/api/tasks/queued', function(err, req, res, obj) {
+                expect(err).to.eql(null);
+                expect(res.statusCode).to.eql(200);
+                expect(obj).to.eql([]);
+                done();
+            });
+        });
+    });
+
     it('POST /api/tasks/:id/result to not found task return 404', function(done) {
         client.post('/api/tasks/563c0e4d6dd4bb864dc20565/result', {result: 'PASS'}, function(err, req, res, obj) {
             expect(err).not.to.eql(null);

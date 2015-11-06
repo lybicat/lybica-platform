@@ -23,6 +23,15 @@ module.exports = {
             });
         },
     },
+    '/api/tasks/queued': {
+        get: function(req, res, next) {
+            Task.find({started: false}, function(err, tasks) {
+                if (err) return next(err);
+                res.send(tasks);
+                return next();
+            });
+        },
+    },
     '/api/tasks/:id/result': {
         post: function(req, res, next) {
             Task.findById(req.params.id)

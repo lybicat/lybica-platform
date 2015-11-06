@@ -37,7 +37,7 @@ module.exports = {
             Task.findById(req.params.id)
             .then(function(task) {
                 if (task === null) {
-                    res.send(404, {'err': 'task ' + req.params.id + ' not found'});
+                    res.send(404, {err: 'task ' + req.params.id + ' not found'});
                     return next();
                 }
                 task.result = req.body;
@@ -53,5 +53,24 @@ module.exports = {
                 });
             });
         }
-    }
+    },
+    '/api/tasks/:id/start': {
+        put: function(req, res, next) {
+            Task.findById(req.params.id)
+            .then(function(task) {
+                if (task === null) {
+                    res.send(404, {err: 'task ' + req.params.id + ' not found'});
+                    return next();
+                }
+                task.started = true;
+                task.startat = Date.now();
+                task.save(function(err, t) {
+                    if (err) return next(err);
+                    res.send(200, {});
+                    return next();
+                });
+            });
+        }
+    },
 };
+

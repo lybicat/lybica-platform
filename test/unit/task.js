@@ -126,5 +126,23 @@ describe('/api/tasks', function() {
             });
         });
     });
+
+    it('PUT /api/tasks/:id/start to start one task return 200', function(done) {
+        var task = new Task();
+        task.caseset = ['c1'];
+        task.device = ['d1'];
+        task.started = false;
+        task.save().then(function(t) {
+            client.put('/api/tasks/' + t._id + '/start', function(err, req, res, obj) {
+                expect(err).to.eql(null);
+                expect(res.statusCode).to.eql(200);
+                Task.findById(t._id)
+                .then(function(t) {
+                    expect(t.started).to.eql(true);
+                    done();
+                });
+            });
+        });
+    });
 });
 

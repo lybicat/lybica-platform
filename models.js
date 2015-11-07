@@ -5,20 +5,20 @@ var Mixed = mongoose.SchemaTypes.Mixed;
 
 // tasks
 var taskSchema = mongoose.Schema({
-    //planid: ObjectId, //TODO
+    planid: ObjectId,
     triggerby: {type: String, default: 'SYSTEM'},
     triggerat: {type: Date, default: Date.now},
     started: {type: Boolean, default: false},
     startat: Date,
     passed: {type: Boolean, default: false},
     done: {type: Boolean, default: false},
-    build: {type: String, default: ''}, // TODO
+    build: {type: String, default: ''},
     caseset: [String],
     device: [String],
     actions: [String],
     result: Mixed
 });
-//taskSchema.index({planid: 1}); //TODO
+taskSchema.index({planid: 1, build: 1});
 module.exports.Task = mongoose.model('task', taskSchema);
 
 

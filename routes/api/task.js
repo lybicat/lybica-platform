@@ -46,8 +46,7 @@ module.exports = {
                     task.passed = true;
                 }
                 task.done = true;
-                task.save(function(err, t) {
-                    if (err) return next(err);
+                task.save().then(function(t) {
                     res.send(200, {});
                     return next();
                 });
@@ -64,8 +63,7 @@ module.exports = {
                 }
                 task.started = true;
                 task.startat = Date.now();
-                task.save(function(err, t) {
-                    if (err) return next(err);
+                task.save().then(function(t) {
                     res.send(200, {});
                     return next();
                 });

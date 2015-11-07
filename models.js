@@ -23,6 +23,14 @@ module.exports.Task = mongoose.model('task', taskSchema);
 
 
 // remote actions
-var actionSchema = mongoose.Schema({});
+var actionSchema = mongoose.Schema({
+    name: String,
+    id: Number,
+    desc: String,
+    exec: String,
+    createby: String,
+    createat: {type: Date, default: Date.now},
+    updateat: {type: Date, default: Date.now}
+});
 module.exports.Action = mongoose.model('action', actionSchema);
 

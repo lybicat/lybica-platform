@@ -70,5 +70,22 @@ module.exports = {
             });
         }
     },
+    '/api/tasks/:id/done': {
+        put: function(req, res, next) {
+            Task.findById(req.params.id)
+            .then(function(task) {
+                if (task === null) {
+                    res.send(404, {err: 'task ' + req.params.id + ' not found'});
+                    return next();
+                }
+                task.done = true;
+                task.doneat = Date.now();
+                task.save().then(function(t) {
+                    res.send(200, {});
+                    return next();
+                });
+            });
+        }
+    },
 };
 

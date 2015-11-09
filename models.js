@@ -12,6 +12,7 @@ var taskSchema = mongoose.Schema({
     startat: Date,
     passed: {type: Boolean, default: false},
     done: {type: Boolean, default: false},
+    doneat: Date,
     build: {type: String, default: ''},
     caseset: [String],
     device: [String],

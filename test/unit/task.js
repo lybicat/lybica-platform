@@ -144,5 +144,22 @@ describe('/api/tasks', function() {
             });
         });
     });
+
+    it('PUT /api/tasks/:id/done to mark one task done', function(done) {
+        var task = new Task();
+        task.started = true;
+        task.done = false;
+        task.save().then(function(t) {
+            client.put('/api/tasks/' + t._id + '/done', function(err, req, res, obj)  {
+                expect(err).to.eql(null);
+                expect(res.statusCode).to.eql(200);
+                Task.findById(t._id)
+                .then(function(t) {
+                    expect(t.done).to.eql(true);
+                    done();
+                });
+            });
+        });
+    });
 });
 

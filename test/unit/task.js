@@ -102,6 +102,33 @@ describe('/api/tasks', function() {
         });
     });
 
+    it('GET /api/tasks/done return [] when only active task', function(done) {
+        var task = new Task();
+        task.done = false;
+        task.save().then(function() {
+            client.get('/api/tasks/done', function(err, req, res, obj) {
+                expect(err).to.eql(null);
+                expect(res.statusCode).to.eql(200);
+                expect(obj).to.eql([]);
+                done();
+            });
+        });
+    });
+
+    it('GET /api/tasks/done return [xxx] when done task exist', function(done) {
+        var task = new Task();
+        task.done = true;
+        task.save().then(function() {
+            client.get('/api/tasks/done', function(err, req, res, obj) {
+                expect(err).to.eql(null);
+                expect(res.statusCode).to.eql(200);
+                expect(obj.length).to.eql(1);
+                expect(obj[0].done).to.eql(true);
+                done();
+            });
+        });
+    });
+
     it('POST /api/tasks/:id/result to not found task return 404', function(done) {
         client.post('/api/tasks/563c0e4d6dd4bb864dc20565/result', {result: 'PASS'}, function(err, req, res, obj) {
             expect(err).not.to.eql(null);

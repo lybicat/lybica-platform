@@ -20,6 +20,7 @@
   "dependencies": {
     "lodash": "^3.10.1",
     "mongoose": "^4.2.4",
+    "mongoose-paginate": "^4.2.0",
     "restify": "^4.0.3",
     "restify-routes": "^0.1.2"
   },

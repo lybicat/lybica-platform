@@ -5,19 +5,21 @@ var Mixed = mongoose.SchemaTypes.Mixed;
 
 // tasks
 var taskSchema = mongoose.Schema({
-    planid: ObjectId,
-    triggerby: {type: String, default: 'SYSTEM'},
-    triggerat: {type: Date, default: Date.now},
-    started: {type: Boolean, default: false},
-    startat: Date,
-    passed: {type: Boolean, default: false},
-    done: {type: Boolean, default: false},
-    doneat: Date,
-    build: {type: String, default: ''},
-    caseset: [String],
-    device: [String],
-    actions: [String],
-    result: Mixed
+  planid: ObjectId,
+  triggerby: {type: String, default: 'SYSTEM'},
+  triggerat: {type: Date, default: Date.now},
+  started: {type: Boolean, default: false},
+  startat: Date,
+  passed: {type: Boolean, default: false},
+  done: {type: Boolean, default: false},
+  doneat: Date,
+  build: {type: String, default: ''},
+  caseset: [String],
+  device: [String],
+  actions: [String],
+  consolelink: {type: String, default: ''}, // set when task start
+  loglink: {type: String, default: ''}, // set when task done
+  result: Mixed
 });
 taskSchema.index({planid: 1, build: 1});
 module.exports.Task = mongoose.model('task', taskSchema);
@@ -25,13 +27,28 @@ module.exports.Task = mongoose.model('task', taskSchema);
 
 // remote actions
 var actionSchema = mongoose.Schema({
-    name: String,
-    id: Number,
-    desc: String,
-    exec: String,
-    createby: String,
-    createat: {type: Date, default: Date.now},
-    updateat: {type: Date, default: Date.now}
+  name: String,
+  id: Number,
+  desc: String,
+  exec: String,
+  createby: String,
+  createat: {type: Date, default: Date.now},
+  updateat: {type: Date, default: Date.now}
 });
 module.exports.Action = mongoose.model('action', actionSchema);
 
+
+// agents
+var agentSchema = mongoose.Schema({
+  name: String,
+  ip: String,
+  available: {type: Boolean, default: false},
+  labels: [String],
+  createat: {type: Date, default: Date.now},
+  updateat: {type: Date, default: Date.now},
+  runners: {
+    all: Number,
+    running: Number
+  }
+});
+module.exports.Agent = mongoose.model('agent', actionSchema);

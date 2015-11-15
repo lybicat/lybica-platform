@@ -30,9 +30,9 @@ module.exports = {
       task.caseset = req.body.caseset;
       task.device = req.body.device;
       task.save(function(err, t) {
-          if (err) return next(err);
-          res.send(200, {id: t._id});
-          return next();
+        if (err) return next(err);
+        res.send(200, {id: t._id});
+        return next();
       });
     },
   },

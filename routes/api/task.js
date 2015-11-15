@@ -1,9 +1,16 @@
 var Task = require('../../models').Task;
 
-function getFilteredTasks(filterCond, req, res, next) {
-  Task.find(filterCond)
-  .sort({triggerat:-1})
-  .then(function(tasks) {
+function _getFilteredTasks(filterCond, req, res, next) {
+  Task.paginate(filterCond, {
+    page: req.params.page || 1,
+    limit: req.params.limit || 30,
+    sortBy: {
+      triggerat: -1
+    },
+    lean: true
+  }, function(err, tasks, pageCount, itemCount) {
+    if (err) return next(err);
+
     res.send(tasks);
     return next();
   });
@@ -13,7 +20,7 @@ function getFilteredTasks(filterCond, req, res, next) {
 module.exports = {
   '/api/tasks': {
     get: function(req, res, next) {
-      return getFilteredTasks({done: false}, req, res, next);
+      return _getFilteredTasks({done: false}, req, res, next);
     },
     post: function(req, res, next) {
       var task = new Task();
@@ -31,12 +38,12 @@ module.exports = {
   },
   '/api/tasks/queued': {
     get: function(req, res, next) {
-      return getFilteredTasks({started: false}, req, res, next);
+      return _getFilteredTasks({started: false}, req, res, next);
     },
   },
   '/api/tasks/done': {
     get: function(req, res, next) {
-      return getFilteredTasks({done: true}, req, res, next);
+      return _getFilteredTasks({done: true}, req, res, next);
     },
   },
   '/api/tasks/:id/result': {

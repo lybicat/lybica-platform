@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var ObjectId = mongoose.SchemaTypes.ObjectId;
 var Mixed = mongoose.SchemaTypes.Mixed;
+var mongoosePaginate = require('mongoose-paginate');
 
 
 // tasks
@@ -22,6 +23,7 @@ var taskSchema = mongoose.Schema({
   result: Mixed
 });
 taskSchema.index({planid: 1, build: 1});
+taskSchema.plugin(mongoosePaginate);
 module.exports.Task = mongoose.model('task', taskSchema);
 
 

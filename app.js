@@ -8,7 +8,8 @@ var server = restify.createServer({
   version: '1.0.0'
 });
 
-require('./ws')(server.server);
+var io = require('./ws')(server.server);
+module.exports.io = io;
 
 server.use(restify.acceptParser(server.acceptable));
 server.use(restify.queryParser());

@@ -1,4 +1,5 @@
 var Task = require('../../models').Task;
+var io = require('../../app').io;
 
 function _getFilteredTasks(filterCond, req, res, next) {
   Task.paginate(filterCond, {
@@ -31,6 +32,7 @@ module.exports = {
       task.device = req.body.device;
       task.save(function(err, t) {
         if (err) return next(err);
+        io.emit('task', t);
         res.send(200, {id: t._id});
         return next();
       });

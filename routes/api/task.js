@@ -48,7 +48,19 @@ module.exports = {
       return _getFilteredTasks({done: true}, req, res, next);
     },
   },
-  '/api/tasks/:id/result': {
+  '/api/task/:id': {
+    get: function(req, res, next) {
+      Task.findById(req.params.id, function(err, task) {
+        if (task === null) {
+          res.send(404, {err: 'task ' + req.params.id + ' not found'});
+          return next();
+        }
+        res.send(task);
+        return next();
+      });
+    },
+  },
+  '/api/task/:id/result': {
     post: function(req, res, next) {
       Task.findById(req.params.id)
       .then(function(task) {
@@ -69,7 +81,7 @@ module.exports = {
       });
     }
   },
-  '/api/tasks/:id/start': {
+  '/api/task/:id/start': {
     put: function(req, res, next) {
       Task.findById(req.params.id)
       .then(function(task) {
@@ -86,7 +98,7 @@ module.exports = {
       });
     }
   },
-  '/api/tasks/:id/done': {
+  '/api/task/:id/done': {
     put: function(req, res, next) {
       Task.findById(req.params.id)
       .then(function(task) {

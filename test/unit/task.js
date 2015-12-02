@@ -129,19 +129,19 @@ describe('/api/tasks', function() {
     });
   });
 
-  it('POST /api/tasks/:id/result to not found task return 404', function(done) {
-    client.post('/api/tasks/563c0e4d6dd4bb864dc20565/result', {result: 'PASS'}, function(err, req, res, obj) {
+  it('POST /api/task/:id/result to not found task return 404', function(done) {
+    client.post('/api/task/563c0e4d6dd4bb864dc20565/result', {result: 'PASS'}, function(err, req, res, obj) {
       expect(err).not.to.eql(null);
       expect(res.statusCode).to.eql(404);
       done();
     });
   });
 
-  it('POST /api/tasks/:id/result to exist task return 200', function(done) {
+  it('POST /api/task/:id/result to exist task return 200', function(done) {
     var task = new Task();
     task.save(function(err, t) {
       expect(err).to.eql(null);
-      client.post('/api/tasks/' + t._id + '/result', {passed: true}, function(err, req, res, obj) {
+      client.post('/api/task/' + t._id + '/result', {passed: true}, function(err, req, res, obj) {
         expect(err).to.eql(null);
         expect(res.statusCode).to.eql(200);
         Task.findOne({_id: t._id}, function(err, t) {
@@ -154,13 +154,13 @@ describe('/api/tasks', function() {
     });
   });
 
-  it('PUT /api/tasks/:id/start to start one task return 200', function(done) {
+  it('PUT /api/task/:id/start to start one task return 200', function(done) {
     var task = new Task();
     task.caseset = ['c1'];
     task.device = ['d1'];
     task.started = false;
     task.save().then(function(t) {
-      client.put('/api/tasks/' + t._id + '/start', function(err, req, res, obj) {
+      client.put('/api/task/' + t._id + '/start', function(err, req, res, obj) {
         expect(err).to.eql(null);
         expect(res.statusCode).to.eql(200);
         Task.findById(t._id)
@@ -172,12 +172,12 @@ describe('/api/tasks', function() {
     });
   });
 
-  it('PUT /api/tasks/:id/done to mark one task done', function(done) {
+  it('PUT /api/task/:id/done to mark one task done', function(done) {
     var task = new Task();
     task.started = true;
     task.done = false;
     task.save().then(function(t) {
-      client.put('/api/tasks/' + t._id + '/done', function(err, req, res, obj)  {
+      client.put('/api/task/' + t._id + '/done', function(err, req, res, obj)  {
         expect(err).to.eql(null);
         expect(res.statusCode).to.eql(200);
         Task.findById(t._id)
@@ -188,5 +188,21 @@ describe('/api/tasks', function() {
       });
     });
   });
+
+  it('GET /api/task/:id return task infomation', function(done) {
+    var task = new Task();
+    task.caseset = ['c1'];
+    task.save()
+    .then(function(t) {
+      client.get('/api/task/' + t._id, function(err, req, res, obj) {
+        expect(err).to.eql(null);
+        expect(res.statusCode).to.eql(200);
+        expect(obj._id).to.eql(t._id.toString());
+        expect(obj.caseset[0]).to.eql('c1');
+        done();
+      });
+    });
+  });
+
 });
 

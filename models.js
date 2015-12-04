@@ -53,4 +53,25 @@ var agentSchema = mongoose.Schema({
     running: Number
   }
 });
-module.exports.Agent = mongoose.model('agent', actionSchema);
+
+agentSchema.statics.createOrUpdate = function(ip, data, callback) {
+  this.findOne({ip: ip}, function(err, agent) {
+    if (err) return callback(err);
+
+    if (agent === null) agent = new Agent();
+
+    agent.ip = ip;
+    agent.name = data.name;
+    agent.available = true;
+    agent.labels = data.labels;
+    agent.updateat = Date.now();
+    agent.runners = data.runners;
+
+    agent.save(function(err, a) {
+      callback(err, a);
+    });
+  });
+};
+
+var Agent = module.exports.Agent = mongoose.model('agent', agentSchema);
+

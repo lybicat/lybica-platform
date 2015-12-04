@@ -1,19 +1,27 @@
 var socketio = require('socket.io');
+var Agent = require('./models').Action;
 
-function Agent(opts) {
+function AgentInst(opts) {
   this.ip = opts.ip;
   this.name = opts.name;
   this.platform = opts.platform;
   this.labels = opts.labels;
-  this.runners = opts.runners;
+  this.runners = {
+    all: opts.runners.all,
+    running: opts.runners.running
+  };
 }
 
-Agent.prototype.connect = function() {
-  // TODO: mark agent as online, and create/update its fields
+AgentInst.prototype.connect = function() {
+  var self = this;
+
+  Agent.createOrUpdate(self.ip, self, function(err) {
+    if (err) console.log('failed to create agent');
+  });
 };
 
 
-Agent.prototype.disconnect = function() {
+AgentInst.prototype.disconnect = function() {
   // TODO: mark agent as offline, and record its last connected time
 };
 
@@ -28,7 +36,7 @@ module.exports = function(server) {
     socket.on('agent', function(data) {
       data.ip = clientIp;
       console.log('agent connected! %j', data);
-      agent = new Agent(data);
+      agent = new AgentInst(data);
       agent.connect();
       // TODO: emit pending tasks
     });

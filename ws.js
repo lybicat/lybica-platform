@@ -1,5 +1,5 @@
 var socketio = require('socket.io');
-var Agent = require('./models').Action;
+var Agent = require('./models').Agent;
 
 function AgentInst(opts) {
   this.ip = opts.ip;

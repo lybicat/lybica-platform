@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var restify = require('restify');
 var mongoose = require('mongoose');
 var config = require('./config');

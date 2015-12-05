@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var mongoose = require('mongoose');
 var ObjectId = mongoose.SchemaTypes.ObjectId;
 var Mixed = mongoose.SchemaTypes.Mixed;
@@ -62,7 +65,7 @@ agentSchema.statics.createOrUpdate = function(ip, data, callback) {
 
     agent.ip = ip;
     agent.name = data.name;
-    agent.available = true;
+    agent.available = data.available || true;
     agent.labels = data.labels;
     agent.updateat = Date.now();
     agent.runners = data.runners;

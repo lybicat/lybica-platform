@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var restify = require('restify');
 var expect = require('expect.js');
 var Task = require('../../models').Task;

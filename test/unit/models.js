@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var expect = require('expect.js');
 var Agent = require('../../models').Agent;
 
@@ -36,6 +39,7 @@ describe('models.Action', function() {
     oldAgent.ip = '127.0.0.1';
     oldAgent.name = 'unittest';
     oldAgent.labels = [];
+    oldAgent.available = false;
     oldAgent.runners = {all: 1, running: 0};
     oldAgent.save().then(function() {
       Agent.createOrUpdate('127.0.0.1', agent, function(err, agent) {

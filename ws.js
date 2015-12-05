@@ -1,5 +1,9 @@
+/* jshint node: true */
+'use strict';
+
 var socketio = require('socket.io');
 var Agent = require('./models').Agent;
+var Task = require('./models').Task;
 
 function AgentInst(opts) {
   this.ip = opts.ip;
@@ -22,7 +26,12 @@ AgentInst.prototype.connect = function() {
 
 
 AgentInst.prototype.disconnect = function() {
-  // TODO: mark agent as offline, and record its last connected time
+  var self = this;
+
+  self.available = false;
+  Agent.createOrUpdate(self.ip, self, function(err) {
+    if (err) console.log('failed to disconnect agent');
+  });
 };
 
 

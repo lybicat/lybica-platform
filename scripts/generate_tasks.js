@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var restify = require('restify');
 var client = restify.createJsonClient({
     url: 'http://127.0.0.1'

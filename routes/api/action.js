@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var Action = require('../../models').Action;
 
 module.exports = {

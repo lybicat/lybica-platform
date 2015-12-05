@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var Task = require('../../models').Task;
 var io = require('../../app').io;
 

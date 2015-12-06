@@ -42,6 +42,7 @@ module.exports = function(server) {
     var agent;
     var clientIp = socket.request.connection.remoteAddress;
 
+    // agent register
     socket.on('agent', function(data) {
       data.ip = clientIp;
       console.log('agent connected! %j', data);
@@ -50,6 +51,17 @@ module.exports = function(server) {
       // TODO: emit pending tasks
     });
 
+    // task done
+    socket.on('done', function() {
+      // TODO: emit pending tasks
+    });
+
+    // error
+    socket.on('error', function(err) {
+      // TODO: handle error event
+    });
+
+    // agent close
     socket.on('disconnect', function() {
       if (agent) {
         agent.disconnect();

@@ -41,7 +41,7 @@ module.exports = {
       });
     },
   },
-  '/api/tasks/queued': {
+  '/api/tasks/pending': {
     get: function(req, res, next) {
       return _getFilteredTasks({started: false}, req, res, next);
     },

@@ -76,12 +76,12 @@ describe('/api/tasks', function() {
     });
   });
 
-  it('GET /api/tasks/queued return [xxx] when unstarted tasks in queue', function(done) {
+  it('GET /api/tasks/pending return [xxx] when unstarted tasks in queue', function(done) {
     var task = new Task();
     task.caseset = ['c1'];
     task.device = ['d1'];
     task.save().then(function() {
-      client.get('/api/tasks/queued', function(err, req, res, obj) {
+      client.get('/api/tasks/pending', function(err, req, res, obj) {
         expect(err).to.eql(null);
         expect(res.statusCode).to.eql(200);
         expect(obj.length).to.eql(1);
@@ -90,13 +90,13 @@ describe('/api/tasks', function() {
     });
   });
 
-  it('GET /api/tasks/queued return [] when only started task in queue', function(done) {
+  it('GET /api/tasks/pending return [] when only started task in queue', function(done) {
     var task = new Task();
     task.caseset = ['c1'];
     task.device = ['d1'];
     task.started = true;
     task.save().then(function() {
-      client.get('/api/tasks/queued', function(err, req, res, obj) {
+      client.get('/api/tasks/pending', function(err, req, res, obj) {
         expect(err).to.eql(null);
         expect(res.statusCode).to.eql(200);
         expect(obj).to.eql([]);

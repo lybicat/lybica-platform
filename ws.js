@@ -16,11 +16,12 @@ function AgentInst(opts) {
   };
 }
 
-AgentInst.prototype.connect = function() {
+AgentInst.prototype.connect = function(callback) {
   var self = this;
 
   Agent.createOrUpdate(self.ip, self, function(err) {
     if (err) console.log('failed to create agent');
+    callback(err);
   });
 };
 
@@ -42,18 +43,46 @@ module.exports = function(server) {
     var agent;
     var clientIp = socket.request.connection.remoteAddress;
 
+    function _emitPendingTasks() {
+      // TODO: device pending make task pending
+      console.log('searching pending tasks to assign');
+      Task.find({started: false}, function(err, tasks) {
+        console.log('find %d pending tasks', tasks.length);
+        if (err === null && tasks.length > 0) {
+          tasks.forEach(function(t) {
+            socket.emit('task', t);
+          });
+        }
+      });
+    }
+
+    function _updateRunning(inc) {
+      if (agent) {
+        Agent.findOneAndUpdate({ip: agent.ip}, {$inc: {'runners.running': inc}}, function(err) {
+          if (err) console.log(err);
+        });
+      }
+    }
+
     // agent register
     socket.on('agent', function(data) {
       data.ip = clientIp;
       console.log('agent connected! %j', data);
       agent = new AgentInst(data);
-      agent.connect();
-      // TODO: emit pending tasks
+      agent.connect(function(err) {
+        if (err === null) _emitPendingTasks();
+      });
+    });
+
+    // task start
+    socket.on('start', function() {
+      _updateRunning(1); // runners.running ++
     });
 
     // task done
     socket.on('done', function() {
-      // TODO: emit pending tasks
+      _updateRunning(-1); // runners.running --
+      _emitPendingTasks();
     });
 
     // error

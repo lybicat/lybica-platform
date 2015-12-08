@@ -10,7 +10,7 @@ module.exports = {
         .sort('-updateat')
         .exec(function(err, agents) {
           if (err) return next(err);
-          res.send(agents);
+          return res.send(agents);
         });
     }
   }

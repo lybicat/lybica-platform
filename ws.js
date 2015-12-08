@@ -19,6 +19,7 @@ function AgentInst(opts) {
 AgentInst.prototype.connect = function(callback) {
   var self = this;
 
+  self.available = true;
   Agent.createOrUpdate(self.ip, self, function(err) {
     if (err) console.log('failed to create agent');
     callback(err);
@@ -30,6 +31,7 @@ AgentInst.prototype.disconnect = function() {
   var self = this;
 
   self.available = false;
+  self.runners.running = 0;
   Agent.createOrUpdate(self.ip, self, function(err) {
     if (err) console.log('failed to disconnect agent');
   });
@@ -37,6 +39,7 @@ AgentInst.prototype.disconnect = function() {
 
 
 module.exports = function(server) {
+  // TODO: before socket io create, set all agents to offline
   var io = socketio.listen(server);
 
   io.on('connection', function(socket) {
@@ -93,6 +96,7 @@ module.exports = function(server) {
     // agent close
     socket.on('disconnect', function() {
       if (agent) {
+        console.log('agent "%s" disconnected!', agent.ip);
         agent.disconnect();
       }
     });

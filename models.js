@@ -65,7 +65,7 @@ agentSchema.statics.createOrUpdate = function(ip, data, callback) {
 
     agent.ip = ip;
     agent.name = data.name;
-    agent.available = data.available || true;
+    agent.available = data.available === undefined ? true : data.available;
     agent.labels = data.labels;
     agent.updateat = Date.now();
     agent.runners = data.runners;

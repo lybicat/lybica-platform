@@ -207,5 +207,24 @@ describe('/api/tasks', function() {
     });
   });
 
+  it('POST /api/task/:id update task field', function(done) {
+    var task = new Task();
+    task.caseset = ['c1'];
+    task.save()
+    .then(function(t) {
+      client.post('/api/task/' + t._id, {loglink: 'http://loglink', 'consolelink': 'http://consolelink'}, function(err, req, res, obj) {
+        expect(err).to.eql(null);
+        expect(res.statusCode).to.eql(200);
+        expect(obj.loglink).to.eql('http://loglink');
+        expect(obj.consolelink).to.eql('http://consolelink');
+        Task.findById(t._id)
+        .then(function(t) {
+          expect(t.loglink).to.eql('http://loglink');
+          expect(t.consolelink).to.eql('http://consolelink');
+          done();
+        });
+      });
+    });
+  });
 });
 

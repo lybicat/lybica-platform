@@ -15,8 +15,7 @@ function _getFilteredTasks(filterCond, req, res, next) {
   }, function(err, tasks, pageCount, itemCount) {
     if (err) return next(err);
 
-    res.send(tasks);
-    return next();
+    return res.send(tasks);
   });
 }
 
@@ -36,8 +35,7 @@ module.exports = {
       task.save(function(err, t) {
         if (err) return next(err);
         io.emit('task', t);
-        res.send(200, {id: t._id});
-        return next();
+        return res.send(200, {id: t._id});
       });
     },
   },
@@ -55,21 +53,32 @@ module.exports = {
     get: function(req, res, next) {
       Task.findById(req.params.id, function(err, task) {
         if (task === null) {
-          res.send(404, {err: 'task ' + req.params.id + ' not found'});
-          return next();
+          return res.send(404, {err: 'task ' + req.params.id + ' not found'});
         }
-        res.send(task);
-        return next();
+        return res.send(task);
       });
     },
+    post: function(req, res, next) {
+      Task.findById(req.params.id)
+      .then(function(task) {
+        if (task === null) {
+          return res.send(404, {err: 'task ' + req.params.id + ' not found'});
+        }
+        Object.keys(req.body).forEach(function(k) {
+          task[k] = req.body[k];
+        });
+        task.save().then(function(t) {
+          return res.send(200, t);
+        });
+      });
+    }
   },
   '/api/task/:id/result': {
     post: function(req, res, next) {
       Task.findById(req.params.id)
       .then(function(task) {
         if (task === null) {
-          res.send(404, {err: 'task ' + req.params.id + ' not found'});
-          return next();
+          return res.send(404, {err: 'task ' + req.params.id + ' not found'});
         }
         task.result = req.body;
         task.markModified('result');
@@ -78,8 +87,7 @@ module.exports = {
         }
         task.done = true;
         task.save().then(function(t) {
-          res.send(200, {});
-          return next();
+          return res.send(200, {});
         });
       });
     }
@@ -89,14 +97,12 @@ module.exports = {
       Task.findById(req.params.id)
       .then(function(task) {
         if (task === null) {
-          res.send(404, {err: 'task ' + req.params.id + ' not found'});
-          return next();
+          return res.send(404, {err: 'task ' + req.params.id + ' not found'});
         }
         task.started = true;
         task.startat = Date.now();
         task.save().then(function(t) {
-          res.send(200, {});
-          return next();
+          return res.send(200, {});
         });
       });
     }
@@ -106,14 +112,12 @@ module.exports = {
       Task.findById(req.params.id)
       .then(function(task) {
         if (task === null) {
-          res.send(404, {err: 'task ' + req.params.id + ' not found'});
-          return next();
+          return res.send(404, {err: 'task ' + req.params.id + ' not found'});
         }
         task.done = true;
         task.doneat = Date.now();
         task.save().then(function(t) {
-          res.send(200, {});
-          return next();
+          return res.send(200, {});
         });
       });
     }

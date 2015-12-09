@@ -3,7 +3,7 @@
 
 var socketio = require('socket.io');
 var Agent = require('./models').Agent;
-var Task = require('./models').Task;
+var assigner = require('./assigner.js');
 
 function AgentInst(opts) {
   this.ip = opts.ip;
@@ -47,10 +47,7 @@ module.exports = function(server) {
     var clientIp = socket.request.connection.remoteAddress;
 
     function _emitPendingTasks() {
-      // TODO: device pending make task pending
-      console.log('searching pending tasks to assign');
-      Task.find({started: false}, function(err, tasks) {
-        console.log('find %d pending tasks', tasks.length);
+      assigner.getPendingTasks(function(err, tasks) {
         if (err === null && tasks.length > 0) {
           tasks.forEach(function(t) {
             socket.emit('task', t);

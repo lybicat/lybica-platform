@@ -45,6 +45,7 @@ module.exports = function(server) {
   io.on('connection', function(socket) {
     var agent;
     var clientIp = socket.request.connection.remoteAddress;
+    console.log('%s connected!', clientIp);
 
     function _emitPendingTasks() {
       assigner.getPendingTasks(function(err, tasks) {
@@ -67,11 +68,11 @@ module.exports = function(server) {
     // agent register
     socket.on('agent', function(data) {
       data.ip = clientIp;
-      console.log('agent connected! %j', data);
       agent = new AgentInst(data);
       agent.connect(function(err) {
         if (err === null) _emitPendingTasks();
       });
+      console.log('agent %s registered! %j', clientIp, data);
     });
 
     // task start

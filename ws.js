@@ -91,6 +91,16 @@ module.exports = function(server) {
       // TODO: handle error event
     });
 
+    // forward console event to others
+    socket.on('console', function(msg) {
+      console.log('got console event');
+      socket.broadcast.emit('console', msg);
+    });
+
+    socket.on('data', function(msg) {
+      socket.to(msg.to).emit('data', msg.data);
+    });
+
     // agent close
     socket.on('disconnect', function() {
       if (agent) {

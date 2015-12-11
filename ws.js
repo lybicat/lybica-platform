@@ -28,6 +28,7 @@ AgentInst.prototype.connect = function(callback) {
 
 
 AgentInst.prototype.disconnect = function() {
+  // TODO: update all tasks that assigned to this agent
   var self = this;
 
   self.available = false;

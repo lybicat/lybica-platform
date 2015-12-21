@@ -1,6 +1,7 @@
 /* jshint node: true */
 'use strict';
 
+var _ = require('lodash-node');
 var Task = require('../../models').Task;
 var io = require('../../app').io;
 
@@ -27,11 +28,9 @@ module.exports = {
     },
     post: function(req, res, next) {
       var task = new Task();
-      if (req.body.triggerby) task.triggerby = req.body.triggerby;
-      if (req.body.build) task.build = req.body.build;
-      task.actions = req.body.actions;
-      task.cases = req.body.cases;
-      task.devices = req.body.devices;
+      _.keys(req.body).forEach(function(attr) {
+        task[attr] = req.body[attr];
+      });
       task.save(function(err, t) {
         if (err) return next(err);
         io.emit('task', t);

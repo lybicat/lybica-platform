@@ -61,5 +61,19 @@ describe('/api/plans', function() {
       });
     });
   });
+
+  it('POST /api/plans create the new plan', function(done) {
+    client.post('/api/plans', {cases: ['c1'], devices: ['d1'], actions: ['a1'], labels: ['l1']}, function(err, req, res, obj) {
+      expect(err).to.eql(null);
+      expect(res.statusCode).to.eql(200);
+      Plan.findOne({}, function(err, t) {
+        expect(t.cases[0]).to.eql('c1');
+        expect(t.devices[0]).to.eql('d1');
+        expect(t.actions[0]).to.eql('a1');
+        expect(t.labels[0]).to.eql('l1');
+        done();
+      });
+    });
+  });
 });
 

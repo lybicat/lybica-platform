@@ -7,11 +7,11 @@ var client = restify.createJsonClient({
 });
 
 var build = process.argv[2];
-var caseset = process.argv[3];
-var device = process.argv[4];
+var cases = process.argv[3];
+var devices = process.argv[4];
 var actions = process.argv[5].split(',');
 
-client.post('/api/tasks', {build: build, caseset: caseset, device: device, actions: actions}, function(err, res, req, obj) {
+client.post('/api/tasks', {build: build, cases: cases.split(','), devices: devices.split(','), actions: actions}, function(err, res, req, obj) {
     if (err === null) {
         console.log('new task created!');
     }

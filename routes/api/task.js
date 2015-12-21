@@ -30,8 +30,8 @@ module.exports = {
       if (req.body.triggerby) task.triggerby = req.body.triggerby;
       if (req.body.build) task.build = req.body.build;
       task.actions = req.body.actions;
-      task.caseset = req.body.caseset;
-      task.device = req.body.device;
+      task.cases = req.body.cases;
+      task.devices = req.body.devices;
       task.save(function(err, t) {
         if (err) return next(err);
         io.emit('task', t);

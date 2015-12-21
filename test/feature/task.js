@@ -23,13 +23,13 @@ describe('/api/tasks', function() {
   });
 
   it('POST /api/tasks create the new task', function(done) {
-    client.post('/api/tasks', {caseset: ['c1'], device: ['d1'], build: '12345', actions: ['a1']}, function(err, req, res, obj) {
+    client.post('/api/tasks', {cases: ['c1'], devices: ['d1'], build: '12345', actions: ['a1']}, function(err, req, res, obj) {
       expect(err).to.eql(null);
       expect(res.statusCode).to.eql(200);
       Task.findOne({}, function(err, t) {
         expect(t.build).to.eql('12345');
-        expect(t.caseset[0]).to.eql('c1');
-        expect(t.device[0]).to.eql('d1');
+        expect(t.cases[0]).to.eql('c1');
+        expect(t.devices[0]).to.eql('d1');
         expect(t.actions[0]).to.eql('a1');
         done();
       });
@@ -47,8 +47,8 @@ describe('/api/tasks', function() {
 
   it('GET /api/tasks return [task] when has task in queue', function(done) {
     var task = new Task();
-    task.caseset = ['c1'];
-    task.device = ['d1'];
+    task.cases = ['c1'];
+    task.devices = ['d1'];
     task.save().then(function(t) {
       client.get('/api/tasks', function(err, req, res, obj) {
         expect(err).to.eql(null);
@@ -62,8 +62,8 @@ describe('/api/tasks', function() {
 
   it('GET /api/tasks return [] when no tasks in queue', function(done) {
     var task = new Task();
-    task.caseset = ['c1'];
-    task.device = ['d1'];
+    task.cases = ['c1'];
+    task.devices = ['d1'];
     task.result = {passed: false};
     task.done = true;
     task.save().then(function() {
@@ -78,8 +78,8 @@ describe('/api/tasks', function() {
 
   it('GET /api/tasks/pending return [xxx] when unstarted tasks in queue', function(done) {
     var task = new Task();
-    task.caseset = ['c1'];
-    task.device = ['d1'];
+    task.cases = ['c1'];
+    task.devices = ['d1'];
     task.save().then(function() {
       client.get('/api/tasks/pending', function(err, req, res, obj) {
         expect(err).to.eql(null);
@@ -92,8 +92,8 @@ describe('/api/tasks', function() {
 
   it('GET /api/tasks/pending return [] when only started task in queue', function(done) {
     var task = new Task();
-    task.caseset = ['c1'];
-    task.device = ['d1'];
+    task.cases = ['c1'];
+    task.devices = ['d1'];
     task.started = true;
     task.save().then(function() {
       client.get('/api/tasks/pending', function(err, req, res, obj) {
@@ -159,8 +159,8 @@ describe('/api/tasks', function() {
 
   it('PUT /api/task/:id/start to start one task return 200', function(done) {
     var task = new Task();
-    task.caseset = ['c1'];
-    task.device = ['d1'];
+    task.cases = ['c1'];
+    task.devices = ['d1'];
     task.started = false;
     task.save().then(function(t) {
       client.put('/api/task/' + t._id + '/start', function(err, req, res, obj) {
@@ -194,14 +194,14 @@ describe('/api/tasks', function() {
 
   it('GET /api/task/:id return task infomation', function(done) {
     var task = new Task();
-    task.caseset = ['c1'];
+    task.cases = ['c1'];
     task.save()
     .then(function(t) {
       client.get('/api/task/' + t._id, function(err, req, res, obj) {
         expect(err).to.eql(null);
         expect(res.statusCode).to.eql(200);
         expect(obj._id).to.eql(t._id.toString());
-        expect(obj.caseset[0]).to.eql('c1');
+        expect(obj.cases[0]).to.eql('c1');
         done();
       });
     });
@@ -209,7 +209,7 @@ describe('/api/tasks', function() {
 
   it('POST /api/task/:id update task field', function(done) {
     var task = new Task();
-    task.caseset = ['c1'];
+    task.cases = ['c1'];
     task.save()
     .then(function(t) {
       client.post('/api/task/' + t._id, {loglink: 'http://loglink', 'consolelink': 'http://consolelink'}, function(err, req, res, obj) {

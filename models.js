@@ -18,8 +18,8 @@ var taskSchema = mongoose.Schema({
   done: {type: Boolean, default: false},
   doneat: Date,
   build: {type: String, default: ''},
-  caseset: [String],
-  device: [String],
+  cases: [String],
+  devices: [String],
   actions: [String],
   consolelink: {type: String, default: ''}, // set when task start
   loglink: {type: String, default: ''}, // set when task done
@@ -77,4 +77,20 @@ agentSchema.statics.createOrUpdate = function(ip, data, callback) {
 };
 
 var Agent = module.exports.Agent = mongoose.model('agent', agentSchema);
+
+// plans
+var planSchema = mongoose.Schema({
+  name: String,
+  removed: {type: Boolean, default: false},
+  createby: {type: String, default: 'SYSTEM'},
+  createat: {type: Date, default: Date.now},
+  updateby: {type: String, default: 'SYSTEM'},
+  updateat: {type: Date, default: Date.now},
+  cases: [String],
+  devices: [String],
+  actions: [String],
+  labels: [String]
+});
+planSchema.plugin(mongoosePaginate);
+module.exports.Plan = mongoose.model('plan', planSchema);
 

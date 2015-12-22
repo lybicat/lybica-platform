@@ -34,6 +34,15 @@ module.exports = {
         if (err) return next(err);
         return res.send(200, {id: p._id});
       });
+    },
+  },
+  '/api/plan/:id': {
+    del: function(req, res, next) {
+      Plan.findByIdAndUpdate(req.params.id, {$set: {removed: true}}, function(err, plan) {
+        if (err) return next(err);
+
+        return res.send(200);
+      });
     }
   }
 };

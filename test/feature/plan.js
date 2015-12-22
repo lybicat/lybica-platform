@@ -75,5 +75,22 @@ describe('/api/plans', function() {
       });
     });
   });
+
+  it('DELETE /api/plan/:id return 200 when plan has been removed', function(done) {
+    var plan = new Plan();
+    plan.cases = ['c1'];
+    plan.devices = ['d1'];
+    plan.removed = false;
+    plan.save().then(function(p) {
+      client.del('/api/plan/' + p._id, function(err, req, res, obj) {
+        expect(err).to.eql(null);
+        expect(res.statusCode).to.eql(200);
+        Plan.findOne({}, function(err, p) {
+          expect(p.removed).to.eql(true);
+          done();
+        });
+      });
+    });
+  });
 });
 

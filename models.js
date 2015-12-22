@@ -18,7 +18,7 @@ var taskSchema = mongoose.Schema({
   done: {type: Boolean, default: false},
   doneat: Date,
   build: {type: String, default: ''},
-  cases: [String],
+  cases: [Mixed],
   devices: [String],
   actions: [String],
   consolelink: {type: String, default: ''}, // set when task start
@@ -86,10 +86,11 @@ var planSchema = mongoose.Schema({
   createat: {type: Date, default: Date.now},
   updateby: {type: String, default: 'SYSTEM'},
   updateat: {type: Date, default: Date.now},
-  cases: [String],
+  cases: [Mixed],
   devices: [String],
   actions: [String],
-  labels: [String]
+  labels: [String],
+  parallel: {type: Boolean, default: false}
 });
 planSchema.plugin(mongoosePaginate);
 module.exports.Plan = mongoose.model('plan', planSchema);

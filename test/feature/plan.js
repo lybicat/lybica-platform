@@ -63,11 +63,12 @@ describe('/api/plans', function() {
   });
 
   it('POST /api/plans create the new plan', function(done) {
-    client.post('/api/plans', {cases: ['c1'], devices: ['d1'], actions: ['a1'], labels: ['l1']}, function(err, req, res, obj) {
+    client.post('/api/plans', {cases: [{repo: 'r1', expr: 'c1'}], devices: ['d1'], actions: ['a1'], labels: ['l1']}, function(err, req, res, obj) {
       expect(err).to.eql(null);
       expect(res.statusCode).to.eql(200);
       Plan.findOne({}, function(err, t) {
-        expect(t.cases[0]).to.eql('c1');
+        expect(t.cases[0].repo).to.eql('r1');
+        expect(t.cases[0].expr).to.eql('c1');
         expect(t.devices[0]).to.eql('d1');
         expect(t.actions[0]).to.eql('a1');
         expect(t.labels[0]).to.eql('l1');
@@ -78,8 +79,6 @@ describe('/api/plans', function() {
 
   it('DELETE /api/plan/:id return 200 when plan has been removed', function(done) {
     var plan = new Plan();
-    plan.cases = ['c1'];
-    plan.devices = ['d1'];
     plan.removed = false;
     plan.save().then(function(p) {
       client.del('/api/plan/' + p._id, function(err, req, res, obj) {

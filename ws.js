@@ -45,7 +45,7 @@ module.exports = function(server) {
 
   io.on('connection', function(socket) {
     var agent;
-    var clientIp = socket.request.connection.remoteAddress;
+    var clientIp = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address;
     console.log('%s connected!', clientIp);
 
     function _emitPendingTasks() {

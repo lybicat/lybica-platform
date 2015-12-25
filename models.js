@@ -10,6 +10,7 @@ var mongoosePaginate = require('mongoose-paginate');
 // tasks
 var taskSchema = mongoose.Schema({
   planid: ObjectId,
+  planname: String,
   triggerby: {type: String, default: 'SYSTEM'},
   triggerat: {type: Date, default: Date.now},
   started: {type: Boolean, default: false},
@@ -21,6 +22,7 @@ var taskSchema = mongoose.Schema({
   cases: [Mixed],
   devices: [String],
   actions: [String],
+  labels: [String], // from labels of devices
   consolelink: {type: String, default: ''}, // set when task start
   loglink: {type: String, default: ''}, // set when task done
   result: Mixed

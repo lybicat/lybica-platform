@@ -1,7 +1,7 @@
 /* jshint node: true */
 'use strict';
 
-var _ = require('lodash-node');
+var _ = require('lodash');
 var Task = require('../../models').Task;
 var io = require('../../app').io;
 

@@ -91,5 +91,53 @@ describe('/api/plans', function() {
       });
     });
   });
+
+  it('GET /api/plan/:id return 404 when plan not exist', function(done) {
+    client.get('/api/plan/56790cf65268386011e96dcb', function(err, req, res, obj) {
+      expect(err).not.to.eql(null);
+      expect(res.statusCode).to.eql(404);
+      done();
+    });
+  });
+
+  it('GET /api/plan/:id return plan when plan defined', function(done) {
+    var plan = new Plan();
+    plan.cases = [{repo: 'r1', expr: 'c1'}];
+    plan.devices = ['d1'];
+    plan.actions = ['a1'];
+    plan.labels = ['l1'];
+    plan.save().then(function(p) {
+      client.get('/api/plan/' + p._id, function(err, req, res, obj) {
+        expect(err).to.eql(null);
+        expect(res.statusCode).to.eql(200);
+        expect(obj.cases[0].repo).to.eql('r1');
+        expect(obj.cases[0].expr).to.eql('c1');
+        expect(obj.devices[0]).to.eql('d1');
+        expect(obj.labels[0]).to.eql('l1');
+        done();
+      });
+    });
+  });
+
+  it('POST /api/plan/:id update plan field', function(done) {
+    var plan = new Plan();
+    plan.cases = [{repo: 'r1', expr: 'c1'}];
+    plan.devices = ['d1'];
+    plan.actions = ['a1'];
+    plan.labels = ['l1'];
+    plan.save()
+    .then(function(p) {
+      client.post('/api/plan/' + p._id, {cases: [{repo: 'r1', expr: 'c1'}], devices: [], actions: [], labels: ['l2']}, function(err, req, res, obj) {
+        expect(err).to.eql(null);
+        expect(res.statusCode).to.eql(200);
+        expect(obj.cases[0].repo).to.eql('r1');
+        expect(obj.cases[0].expr).to.eql('c1');
+        expect(obj.devices).to.eql([]);
+        expect(obj.actions).to.eql([]);
+        expect(obj.labels[0]).to.eql('l2');
+        done();
+      });
+    });
+  });
 });
 

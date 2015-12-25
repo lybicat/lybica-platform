@@ -1,7 +1,7 @@
 /* jshint node: true */
 'use strict';
 
-var _ = require('lodash-node');
+var _ = require('lodash');
 var Plan = require('../../models').Plan;
 
 function _getFilteredPlans(filterCond, req, res, next) {
@@ -37,6 +37,27 @@ module.exports = {
     },
   },
   '/api/plan/:id': {
+    get: function(req, res, next) {
+      Plan.findById(req.params.id)
+      .then(function(plan) {
+        if (plan === null) return res.send(404);
+
+        return res.send(plan);
+      });
+    },
+    post: function(req, res, next) {
+      Plan.findById(req.params.id)
+      .then(function(plan) {
+        if (plan === null) return res.send(404);
+
+        Object.keys(req.body).forEach(function(k) {
+          plan[k] = req.body[k];
+        });
+        plan.save().then(function(t) {
+          return res.send(200, t);
+        });
+      });
+    },
     del: function(req, res, next) {
       Plan.findByIdAndUpdate(req.params.id, {$set: {removed: true}}, function(err, plan) {
         if (err) return next(err);
@@ -44,6 +65,6 @@ module.exports = {
         return res.send(200);
       });
     }
-  }
+  },
 };
 

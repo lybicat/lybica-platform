@@ -62,6 +62,19 @@ describe('/api/plans', function() {
     });
   });
 
+  it('GET /api/plans?name=xxx return [] when plan name not matched', function(done) {
+    var plan = new Plan();
+    plan.name = 'yyy';
+    plan.save().then(function(p) {
+      client.get('/api/plans?name=xxx', function(err, req, res, obj) {
+        expect(err).to.eql(null);
+        expect(res.statusCode).to.eql(200);
+        expect(obj).to.eql([]);
+        done();
+      });
+    });
+  });
+
   it('POST /api/plans create the new plan', function(done) {
     client.post('/api/plans', {cases: [{repo: 'r1', expr: 'c1'}], devices: ['d1'], actions: ['a1'], labels: ['l1']}, function(err, req, res, obj) {
       expect(err).to.eql(null);

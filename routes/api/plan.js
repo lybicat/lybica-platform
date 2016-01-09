@@ -23,7 +23,13 @@ function _getFilteredPlans(filterCond, req, res, next) {
 module.exports = {
   '/api/plans': {
     get: function(req, res, next) {
-      return _getFilteredPlans({removed: false}, req, res, next);
+      var filterCond = _.clone(req.params);
+      delete filterCond.page;
+      delete filterCond.limit;
+
+      filterCond.removed = filterCond.removed === true;
+
+      return _getFilteredPlans(filterCond, req, res, next);
     },
     post: function(req, res, next) {
       var plan = new Plan();

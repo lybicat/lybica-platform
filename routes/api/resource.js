@@ -25,21 +25,18 @@ module.exports = {
     get: function(req, res, next) {
       return _getFilteredResources({removed: false}, req, res, next);
     },
+    post:function(req, res, next) {
+      // TODO: create new resource
+      return res.send();
+    }
   },
   '/api/resource/:id/reserve': {
     post: function(req, res, next) {
       var querySet = {
         _id: req.params.id,
         removed: false,
-        $or: [
-          {
-            reservetoken: req.params.reservetoken || null
-          },
-          {
-            reserveexpired: {
-              $lt: Date.now()
-            }
-          }
+        $or: [{reservetoken: req.params.reservetoken || null},
+          {reserveexpired: {$lt: Date.now()}}
         ],
       };
       var _now = Date.now();

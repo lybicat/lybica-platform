@@ -3,6 +3,7 @@
 
 var Resource = require('../../models').Resource;
 var uuid = require('uuid');
+var _ = require('lodash');
 
 function _getFilteredResources(filterCond, req, res, next) {
   Resource.paginate(filterCond, {
@@ -23,11 +24,22 @@ function _getFilteredResources(filterCond, req, res, next) {
 module.exports = {
   '/api/resources': {
     get: function(req, res, next) {
-      return _getFilteredResources({removed: false}, req, res, next);
+      var filterCond = _.clone(req.params);
+      delete filterCond.page;
+      delete filterCond.limit;
+
+      filterCond.removed = filterCond.removed === true;
+      return _getFilteredResources(filterCond, req, res, next);
     },
     post:function(req, res, next) {
-      // TODO: create new resource
-      return res.send();
+      var resource = new Resource();
+      _.keys(req.body).forEach(function(attr) {
+        resource[attr] = req.body[attr];
+      });
+      resource.save(function(err, r) {
+        if (err) return next(err);
+        return res.send(r);
+      });
     }
   },
   '/api/resource/:id/reserve': {

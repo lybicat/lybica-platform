@@ -38,7 +38,7 @@ module.exports = {
       });
       plan.save(function(err, p) {
         if (err) return next(err);
-        return res.send(200, {id: p._id});
+        return res.send(p);
       });
     },
   },

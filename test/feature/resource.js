@@ -32,6 +32,20 @@ describe('/api/resources', function() {
     });
   });
 
+  it('POST /api/resources return resource', function(done) {
+    client.post('/api/resources', {name: 'ut', ip: '127.0.0.1', createby: 'unittest', labels: ['a', 'b']}, function(err, req, res, obj) {
+      expect(err).to.eql(null);
+      expect(res.statusCode).to.eql(200);
+      expect(obj.id).not.to.eql(null);
+      expect(obj.createby).to.eql('unittest');
+      expect(obj.name).to.eql('ut');
+      expect(obj.ip).to.eql('127.0.0.1');
+      expect(obj.labels[0]).to.eql('a');
+      expect(obj.labels[1]).to.eql('b');
+      done();
+    });
+  });
+
   it('POST /api/resource/:id/reserve return 200 when resource not reserved', function(done) {
     var resource = new Resource();
     resource.save().then(function(r) {

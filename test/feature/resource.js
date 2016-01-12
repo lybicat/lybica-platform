@@ -50,6 +50,7 @@ describe('/api/resources', function() {
     var resource = new Resource();
     resource.reserveby = 'unittest';
     resource.reserveat = Date.now();
+    resource.reservetoken = uuid.v4();
     resource.save().then(function(r) {
       client.post('/api/resource/' + r._id + '/reserve', {reserveby: 'unittest'}, function(err, req, res, obj) {
         expect(err).not.to.eql(null);

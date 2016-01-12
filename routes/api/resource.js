@@ -31,19 +31,13 @@ module.exports = {
       var querySet = {
         _id: req.params.id,
         removed: false,
+        reservetoken: req.params.reservetoken || null,
       };
       var reserveSet = {
         reserveby: req.params.reserveby || 'SYSTEM',
         reserveat: Date.now(),
+        reservetoken: req.params.reservetoken || uuid.v4(),
       };
-
-      if (req.params.reservetoken !== undefined) {
-        querySet.reservetoken = req.params.reservetoken;
-        reserveSet.reservetoken = req.params.reservetoken;
-      } else {
-        querySet.reserveby = null;
-        reserveSet.reservetoken = uuid.v4();
-      }
 
       Resource.findOneAndUpdate(querySet, {
         $set: reserveSet

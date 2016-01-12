@@ -31,11 +31,22 @@ module.exports = {
       var querySet = {
         _id: req.params.id,
         removed: false,
-        reservetoken: req.params.reservetoken || null,
+        $or: [
+          {
+            reservetoken: req.params.reservetoken || null
+          },
+          {
+            reserveexpired: {
+              $lt: Date.now()
+            }
+          }
+        ],
       };
+      var _now = Date.now();
       var reserveSet = {
         reserveby: req.params.reserveby || 'SYSTEM',
-        reserveat: Date.now(),
+        reserveat: _now,
+        reserveexpired: _now + parseInt(req.params.reserveduration || 300000),
         reservetoken: req.params.reservetoken || uuid.v4(),
       };
 

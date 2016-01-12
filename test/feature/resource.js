@@ -76,5 +76,24 @@ describe('/api/resources', function() {
       });
     });
   });
+
+  it('POST /api/resource/:id/reserve return 200 when reservation expired', function(done) {
+    var token = uuid.v4();
+    var resource = new Resource();
+    resource.reserveby = 'unittest';
+    resource.reserveat = Date.now() - 300000;
+    resource.reserveexpired = Date.now();
+    resource.reservetoken = token;
+    resource.save().then(function(r) {
+      client.post('/api/resource/' + r._id + '/reserve', {reserveby: 'unittest2', reserveduration: 300000}, function(err, req, res, obj) {
+        expect(err).to.eql(null);
+        expect(res.statusCode).to.eql(200);
+        expect(obj.reservetoken).not.to.eql(token);
+        expect(obj.reserveby).to.eql('unittest2');
+        done();
+      });
+    });
+  })
+  ;
 });
 

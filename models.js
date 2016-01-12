@@ -109,6 +109,7 @@ var resourceSchema = mongoose.Schema({
   updateat: {type: Date, default: Date.now},
   reserveby: String,
   reserveat: Date,
+  reserveexpired: Date,
   reservetoken: String
 });
 resourceSchema.plugin(mongoosePaginate);

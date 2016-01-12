@@ -34,7 +34,6 @@ module.exports = {
     post: function(req, res, next) {
       var querySet = {
         _id: req.params.id,
-        removed: false,
         $or: [{reservetoken: req.params.reservetoken || null},
           {reserveexpired: {$lt: Date.now()}}
         ],
@@ -54,6 +53,30 @@ module.exports = {
         if (resource === null) return res.send(404);
 
         return res.send(reserveSet);
+      });
+    },
+  },
+  '/api/resource/:id/unreserve': {
+    post: function(req, res, next) {
+      var querySet = {
+        _id: req.params.id,
+        $or: [{reservetoken: req.params.reservetoken || null},
+          {reserveexpired: {$lt: Date.now()}}
+        ],
+      };
+
+      Resource.findOneAndUpdate(querySet, {
+        $set: {
+          reserveby: null,
+          reserveat: null,
+          reserveexpired: null,
+          reservetoken: null
+        }
+      }, {new: true})
+      .then(function(resource) {
+        if (resource === null) return res.send(404);
+
+        return res.send(resource);
       });
     },
   },

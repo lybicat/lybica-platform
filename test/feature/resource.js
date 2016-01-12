@@ -93,7 +93,61 @@ describe('/api/resources', function() {
         done();
       });
     });
-  })
-  ;
+  });
+
+  it('POST /api/resource/:id/unreserve return 200 when token matched', function(done) {
+    var token = uuid.v4();
+    var resource = new Resource();
+    resource.reserveby = 'unittest';
+    resource.reserveat = Date.now();
+    resource.reserveexpired = Date.now();
+    resource.reservetoken = token;
+    resource.save().then(function(r) {
+      client.post('/api/resource/' + r._id + '/unreserve', {reservetoken: token}, function(err, req, res, obj) {
+        expect(err).to.eql(null);
+        expect(res.statusCode).to.eql(200);
+        expect(obj.reservetoken).to.eql(null);
+        expect(obj.reserveby).to.eql(null);
+        expect(obj.reserveat).to.eql(null);
+        expect(obj.reserveexpired).to.eql(null);
+        done();
+      });
+    });
+  });
+
+  it('POST /api/resource/:id/unreserve return 200 when resource expired', function(done) {
+    var token = uuid.v4();
+    var resource = new Resource();
+    resource.reserveby = 'unittest';
+    resource.reserveat = Date.now() - 300000;
+    resource.reserveexpired = Date.now();
+    resource.reservetoken = token;
+    resource.save().then(function(r) {
+      client.post('/api/resource/' + r._id + '/unreserve', {}, function(err, req, res, obj) {
+        expect(err).to.eql(null);
+        expect(res.statusCode).to.eql(200);
+        expect(obj.reservetoken).to.eql(null);
+        expect(obj.reserveby).to.eql(null);
+        expect(obj.reserveat).to.eql(null);
+        expect(obj.reserveexpired).to.eql(null);
+        done();
+      });
+    });
+  });
+
+  it('POST /api/resource/:id/unreserve return 404 when token not match', function(done) {
+    var resource = new Resource();
+    resource.reserveby = 'unittest';
+    resource.reserveat = Date.now();
+    resource.reserveexpired = Date.now() + 300000;
+    resource.reservetoken = uuid.v4();
+    resource.save().then(function(r) {
+      client.post('/api/resource/' + r._id + '/unreserve', {token: uuid.v4()}, function(err, req, res, obj) {
+        expect(err).not.to.eql(null);
+        expect(res.statusCode).to.eql(404);
+        done();
+      });
+    });
+  });
 });
 

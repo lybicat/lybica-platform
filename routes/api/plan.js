@@ -12,7 +12,7 @@ function _getFilteredPlans(filterCond, req, res, next) {
       updateat: -1
     },
     lean: true
-  }, function(err, plans, pageCount, itemCount) {
+  }, function(err, plans) {
     if (err) return next(err);
 
     return res.send(plans);

@@ -13,7 +13,7 @@ function _getFilteredTasks(filterCond, req, res, next) {
       triggerat: -1
     },
     lean: true
-  }, function(err, tasks, pageCount, itemCount) {
+  }, function(err, tasks) {
     if (err) return next(err);
 
     return res.send(tasks);

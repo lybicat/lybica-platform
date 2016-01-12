@@ -97,3 +97,34 @@ var planSchema = mongoose.Schema({
 planSchema.plugin(mongoosePaginate);
 module.exports.Plan = mongoose.model('plan', planSchema);
 
+// resources like test PC, router, .etc
+var resourceSchema = mongoose.Schema({
+  name: String,
+  ip: String,
+  labels: [String],
+  removed: {type: Boolean, default: false},
+  createby: {type: String, default: 'SYSTEM'},
+  createat: {type: Date, default: Date.now},
+  updateby: {type: String, default: 'SYSTEM'},
+  updateat: {type: Date, default: Date.now},
+  reserveby: String,
+  reserveat: Date,
+  reservetoken: String
+});
+resourceSchema.plugin(mongoosePaginate);
+module.exports.Resource = mongoose.model('resource', resourceSchema);
+
+// cases
+var caseSchema = mongoose.Schema({
+  name: String,
+  repository: Mixed,
+  labels: [String],
+  removed: {type: Boolean, default: false},
+  createby: {type: String, default: 'SYSTEM'},
+  createat: {type: Date, default: Date.now},
+  updateby: {type: String, default: 'SYSTEM'},
+  updateat: {type: Date, default: Date.now},
+});
+caseSchema.plugin(mongoosePaginate);
+module.exports.Case = mongoose.model('case', caseSchema);
+

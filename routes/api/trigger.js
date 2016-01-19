@@ -2,12 +2,12 @@
 'use strict';
 
 var _ = require('lodash');
-var Plan = require('../../models').Plan;
+var Trigger = require('../../models').Trigger;
 var filterObjects = require('../../helper').filterObjects;
 
 
 module.exports = {
-  '/api/plans': {
+  '/api/triggers': {
     get: function(req, res, next) {
       var filterCond = _.clone(req.params);
       delete filterCond.page;
@@ -15,43 +15,43 @@ module.exports = {
 
       filterCond.removed = filterCond.removed === true;
 
-      return filterObjects(Plan, filterCond, '-updateat', req, res, next);
+      return filterObjects(Trigger, filterCond, '-updateat', req, res, next);
     },
     post: function(req, res, next) {
-      var plan = new Plan();
+      var trigger = new Trigger();
       _.keys(req.body).forEach(function(attr) {
-        plan[attr] = req.body[attr];
+        trigger[attr] = req.body[attr];
       });
-      plan.save(function(err, p) {
+      trigger.save(function(err, p) {
         if (err) return next(err);
         return res.send(200, {id: p._id});
       });
     },
   },
-  '/api/plan/:id': {
+  '/api/trigger/:id': {
     get: function(req, res, next) {
-      Plan.findById(req.params.id)
-      .then(function(plan) {
-        if (plan === null) return res.send(404);
+      Trigger.findById(req.params.id)
+      .then(function(trigger) {
+        if (trigger === null) return res.send(404);
 
-        return res.send(plan);
+        return res.send(trigger);
       });
     },
     post: function(req, res, next) {
-      Plan.findById(req.params.id)
-      .then(function(plan) {
-        if (plan === null) return res.send(404);
+      Trigger.findById(req.params.id)
+      .then(function(trigger) {
+        if (trigger === null) return res.send(404);
 
         _.keys(req.body).forEach(function(k) {
-          plan[k] = req.body[k];
+          trigger[k] = req.body[k];
         });
-        plan.save().then(function(t) {
+        trigger.save().then(function(t) {
           return res.send(200, t);
         });
       });
     },
     del: function(req, res, next) {
-      Plan.findByIdAndUpdate(req.params.id, {$set: {removed: true}}, function(err, plan) {
+      Trigger.findByIdAndUpdate(req.params.id, {$set: {removed: true}}, function(err, trigger) {
         if (err) return next(err);
 
         return res.send(200);

@@ -18,6 +18,9 @@ var taskSchema = mongoose.Schema({
   passed: {type: Boolean, default: false},
   done: {type: Boolean, default: false},
   doneat: Date,
+  aborted: {type: Boolean, default: false},
+  abortat: Date,
+  abortby: String,
   build: {type: String, default: ''},
   cases: [Mixed],
   devices: [String],
@@ -25,9 +28,10 @@ var taskSchema = mongoose.Schema({
   labels: [String], // from labels of devices
   consolelink: {type: String, default: ''}, // set when task start
   loglink: {type: String, default: ''}, // set when task done
-  result: Mixed
+  result: Mixed,
+  agent: String
 });
-taskSchema.index({planid: 1, build: 1});
+taskSchema.index({planid: 1, build: 1, agent: 1});
 taskSchema.plugin(mongoosePaginate);
 module.exports.Task = mongoose.model('task', taskSchema);
 
@@ -97,35 +101,30 @@ var planSchema = mongoose.Schema({
 planSchema.plugin(mongoosePaginate);
 module.exports.Plan = mongoose.model('plan', planSchema);
 
-// resources like test PC, router, .etc
-var resourceSchema = mongoose.Schema({
+// sw builds
+var buildSchema = mongoose.Schema({
   name: String,
-  ip: String,
-  labels: [String],
-  removed: {type: Boolean, default: false},
-  createby: {type: String, default: 'SYSTEM'},
   createat: {type: Date, default: Date.now},
-  updateby: {type: String, default: 'SYSTEM'},
-  updateat: {type: Date, default: Date.now},
-  reserveby: String,
-  reserveat: Date,
-  reserveexpired: Date,
-  reservetoken: String
+  tasks: [ObjectId],
+  labels: [String],
 });
-resourceSchema.plugin(mongoosePaginate);
-module.exports.Resource = mongoose.model('resource', resourceSchema);
+buildSchema.plugin(mongoosePaginate);
+buildSchema.index({name: 1});
+module.exports.Build = mongoose.model('build', buildSchema);
 
-// cases
-var caseSchema = mongoose.Schema({
+
+// triggers
+var triggerSchema = mongoose.Schema({
   name: String,
-  repository: Mixed,
-  labels: [String],
-  removed: {type: Boolean, default: false},
+  type: String,
+  url: String,
   createby: {type: String, default: 'SYSTEM'},
   createat: {type: Date, default: Date.now},
   updateby: {type: String, default: 'SYSTEM'},
   updateat: {type: Date, default: Date.now},
+  disabled: {type: Boolean, default: false},
+  removed: {type: Boolean, default: false},
 });
-caseSchema.plugin(mongoosePaginate);
-module.exports.Case = mongoose.model('case', caseSchema);
+triggerSchema.plugin(mongoosePaginate);
+module.exports.Trigger = mongoose.model('trigger', triggerSchema);
 

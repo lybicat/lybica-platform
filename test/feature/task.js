@@ -150,7 +150,6 @@ describe('/api/tasks', function() {
         Task.findOne({_id: t._id}, function(err, t) {
           expect(t.result.passed).to.eql(true);
           expect(t.passed).to.eql(true);
-          expect(t.done).to.eql(true);
           done();
         });
       });

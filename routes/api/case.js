@@ -2,7 +2,7 @@
 'use strict';
 
 module.exports = {
-  '/api/cases': {
+  '/api/suites': {
     get: function(req, res, next) {
       return res.send([]);
     },

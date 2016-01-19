@@ -3,6 +3,7 @@
 
 var socketio = require('socket.io');
 var Agent = require('./models').Agent;
+var Task = require('./models').Task;
 var assigner = require('./assigner.js');
 
 function AgentInst(opts) {
@@ -28,7 +29,6 @@ AgentInst.prototype.connect = function(callback) {
 
 
 AgentInst.prototype.disconnect = function() {
-  // TODO: update all tasks that assigned to this agent
   var self = this;
 
   self.available = false;
@@ -36,6 +36,11 @@ AgentInst.prototype.disconnect = function() {
   Agent.createOrUpdate(self.ip, self, function(err) {
     if (err) console.log('failed to disconnect agent');
   });
+
+  Task.where({agent: self.ip, done: false})
+    .update({done: true, doneat: Date.now(), aborted: true, abortat: Date.now(), abortby: 'agent'}, function(err, tasks) {
+      if(err) console.log(err);
+    })
 };
 
 
@@ -61,9 +66,15 @@ module.exports = function(server) {
     function _updateRunning(inc) {
       if (agent) {
         Agent.findOneAndUpdate({ip: agent.ip}, {$inc: {'runners.running': inc}}, function(err) {
-          if (err) console.log(err);
+          if(err) console.log(err);
         });
       }
+    }
+
+    function _assignAgentToTask(task) {
+      Task.findByIdAndUpdate(task._id, {$set: {agent: clientIp}}, function(err, t) {
+        if(err) console.log(err);
+      })
     }
 
     // agent register
@@ -77,12 +88,13 @@ module.exports = function(server) {
     });
 
     // task start
-    socket.on('start', function() {
+    socket.on('start', function(task) {
+      _assignAgentToTask(task);
       _updateRunning(1); // runners.running ++
     });
 
     // task done
-    socket.on('done', function() {
+    socket.on('done', function(task) {
       _updateRunning(-1); // runners.running --
       _emitPendingTasks();
     });
@@ -94,11 +106,12 @@ module.exports = function(server) {
 
     // forward console event to others
     socket.on('console', function(msg) {
-      console.log('got console event');
+      console.log('receive console event');
       socket.broadcast.emit('console', msg);
     });
 
     socket.on('data', function(msg) {
+      console.log('send data to ' + msg.to);
       socket.to(msg.to).emit('data', msg.data);
     });
 

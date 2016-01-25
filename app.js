@@ -29,4 +29,8 @@ mongoose.connect(config.DB_URL);
 
 server.listen(config.PORT, function() {
   console.log('%s listening at %s', server.name, server.url);
+  var CronTask = require('./cron');
+  var cron = new CronTask(60000);
+  console.log('Scanning cron tasks every 60seconds');
+  cron.run();
 });

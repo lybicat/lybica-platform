@@ -6,6 +6,9 @@ var mongoose = require('mongoose');
 var config = require('./config');
 var restifyRoutes = require('restify-routes');
 var log4js = require('log4js');
+log4js.configure(config.LOG4JS_SETTINGS);
+
+var logger = require('./logger')('app');
 
 var server = restify.createServer({
   name: 'lybica',
@@ -24,14 +27,22 @@ server.use(function(req, res, next) {
   return next();
 });
 
+// logging error request and response to error log
+server.on('after', function(req, res, err) {
+  if (res.statusCode >= 400) {
+    logger.error('%d %s\n=================================\nRequest: %s\n===============================\nResponse: %s', res.statusCode, req.path(), req, res);
+  }
+});
+
 restifyRoutes.set(server, __dirname + '/routes');
 
 mongoose.connect(config.DB_URL);
 
 server.listen(config.PORT, function() {
-  console.log('%s listening at %s', server.name, server.url);
+  logger.info('%s listening at %s', server.name, server.url);
   var CronTask = require('./cron');
   var cron = new CronTask(60000);
-  console.log('Scanning cron tasks every 60seconds');
+  logger.info('Scanning cron tasks every 60seconds');
   cron.run();
 });
+

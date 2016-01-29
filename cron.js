@@ -5,7 +5,7 @@
 'use strict';
 
 var Thenjs = require('thenjs');
-var moment = require('moment');
+var logger = require('./logger')('cron');
 
 
 function CronTask(interval) {
@@ -18,23 +18,22 @@ CronTask.prototype.run = function() {
 
   function _run() {
     if(self.running === true) {
-      console.warn('last round is still running, skip this round!');
+      logger.warn('last round is still running, skip this round!');
       return;
     }
 
     self.running = true;
-    var now = new moment();
-    console.log('start round at ' + now.toISOString());
+    logger.info('start a new round');
 
     function _scanTriggers(cont) {
       // TODO:
-      console.log('start to scan triggers...');
+      logger.info('start to scan triggers...');
       return cont(null);
     }
 
     function _scanSchedules(cont) {
       // TODO:
-      console.log('start to scan schedules...');
+      logger.info('start to scan schedules...');
       return cont(null);
     }
 
@@ -45,14 +44,13 @@ CronTask.prototype.run = function() {
     .fin(function(cont, err) {
       self.running = false;
       if(err) {
-        // TODO:
+        logger.error('cron job failed, error: %s', err);
       }
-      console.log('done!');
+      logger.info('done!');
     });
   }
 
   setInterval(_run, self.interval);
 }
-
 
 module.exports = CronTask;

@@ -4,7 +4,7 @@
 var socketio = require('socket.io');
 var Agent = require('./models').Agent;
 var Task = require('./models').Task;
-var assigner = require('./assigner.js');
+var logger = require('./logger')('socket');
 
 function AgentInst(opts) {
   this.ip = opts.ip;
@@ -22,7 +22,7 @@ AgentInst.prototype.connect = function(callback) {
 
   self.available = true;
   Agent.createOrUpdate(self.ip, self, function(err) {
-    if (err) console.log('failed to create agent');
+    if (err) logger.error('failed to create agent "%s"', self.ip);
     callback(err);
   });
 };
@@ -34,12 +34,12 @@ AgentInst.prototype.disconnect = function() {
   self.available = false;
   self.runners.running = 0;
   Agent.createOrUpdate(self.ip, self, function(err) {
-    if (err) console.log('failed to disconnect agent');
+    if (err) logger.error('failed to disconnect agent "%s"', self.ip);
   });
 
   Task.where({agent: self.ip, started: true, done: false})
     .update({done: true, doneat: Date.now(), aborted: true, abortat: Date.now(), abortby: 'agent'}, function(err, tasks) {
-      if(err) console.log(err);
+      if(err) logger.error('failed to abort tasks, error: %s', err);
     })
 };
 
@@ -51,11 +51,12 @@ module.exports = function(server) {
   io.on('connection', function(socket) {
     var agent;
     var clientIp = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address;
-    console.log('%s connected!', clientIp);
+    logger.info('%s connected!', clientIp);
 
     function _emitPendingTasks() {
-      assigner.getPendingTasks(function(err, tasks) {
-        if (err === null && tasks.length > 0) {
+      Task.find({started: false})
+      .then(function(tasks) {
+        if (tasks.length > 0) {
           tasks.forEach(function(t) {
             socket.emit('task', t);
           });
@@ -66,14 +67,14 @@ module.exports = function(server) {
     function _updateRunning(inc) {
       if (agent) {
         Agent.findOneAndUpdate({ip: agent.ip}, {$inc: {'runners.running': inc}}, function(err) {
-          if(err) console.log(err);
+          if(err) logger.error(err);
         });
       }
     }
 
     function _assignAgentToTask(task) {
       Task.findByIdAndUpdate(task._id, {$set: {agent: clientIp}}, function(err, t) {
-        if(err) console.log(err);
+        if(err) logger.error(err);
       })
     }
 
@@ -84,7 +85,7 @@ module.exports = function(server) {
       agent.connect(function(err) {
         if (err === null) _emitPendingTasks();
       });
-      console.log('agent %s registered! %j', clientIp, data);
+      logger.info('agent %s registered! %j', clientIp, data);
     });
 
     // task start
@@ -101,24 +102,24 @@ module.exports = function(server) {
 
     // error
     socket.on('error', function(err) {
-      // TODO: handle error event
+      logger.error(err);
     });
 
     // forward console event to others
     socket.on('console', function(msg) {
-      console.log('receive console event');
+      logger.info('receive console event');
       socket.broadcast.emit('console', msg);
     });
 
     socket.on('data', function(msg) {
-      console.log('send data to ' + msg.to);
+      logger.info('send data to ' + msg.to);
       socket.to(msg.to).emit('data', msg.data);
     });
 
     // agent close
     socket.on('disconnect', function() {
       if (agent) {
-        console.log('agent "%s" disconnected!', agent.ip);
+        logger.info('agent "%s" disconnected!', agent.ip);
         agent.disconnect();
       }
     });

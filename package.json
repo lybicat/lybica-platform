@@ -19,6 +19,7 @@
   "homepage": "https://github.com/lybicat/lybica-platform#readme",
   "dependencies": {
     "lodash": "^3.10.1",
+    "log4js": "^0.6.30",
     "moment": "^2.11.1",
     "mongoose": "^4.2.4",
     "mongoose-paginate": "^4.2.0",

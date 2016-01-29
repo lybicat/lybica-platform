@@ -11,7 +11,7 @@ var mongoosePaginate = require('mongoose-paginate');
 var taskSchema = mongoose.Schema({
   planid: ObjectId,
   planname: String,
-  triggerby: {type: String, default: 'SYSTEM'},
+  triggerby: {type: String, default: 'SYSTEM'}, // TODO: change to mixed type
   triggerat: {type: Date, default: Date.now},
   started: {type: Boolean, default: false},
   startat: Date,
@@ -111,6 +111,39 @@ var buildSchema = mongoose.Schema({
 buildSchema.plugin(mongoosePaginate);
 buildSchema.index({name: 1});
 module.exports.Build = mongoose.model('build', buildSchema);
+
+// resources like test PC, router, .etc
+var resourceSchema = mongoose.Schema({
+  name: String,
+  ip: String,
+  labels: [String],
+  removed: {type: Boolean, default: false},
+  disabled: {type: Boolean, default: false},
+  createby: {type: String, default: 'SYSTEM'},
+  createat: {type: Date, default: Date.now},
+  updateby: {type: String, default: 'SYSTEM'},
+  updateat: {type: Date, default: Date.now},
+  reserveby: String,
+  reserveat: Date,
+  reserveexpired: Date,
+  reservetoken: String
+});
+resourceSchema.plugin(mongoosePaginate);
+module.exports.Resource = mongoose.model('resource', resourceSchema);
+
+// cases
+var caseSchema = mongoose.Schema({
+  name: String,
+  repository: Mixed,
+  labels: [String],
+  removed: {type: Boolean, default: false},
+  createby: {type: String, default: 'SYSTEM'},
+  createat: {type: Date, default: Date.now},
+  updateby: {type: String, default: 'SYSTEM'},
+  updateat: {type: Date, default: Date.now},
+});
+caseSchema.plugin(mongoosePaginate);
+module.exports.Case = mongoose.model('case', caseSchema);
 
 
 // triggers

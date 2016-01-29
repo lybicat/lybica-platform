@@ -44,13 +44,13 @@ module.exports = {
   },
   '/api/resource/:id/reserve': {
     post: function(req, res, next) {
+      var _now = Date.now();
       var querySet = {
         _id: req.params.id,
         $or: [{reservetoken: req.params.reservetoken || null},
-          {reserveexpired: {$lt: Date.now()}}
+          {reserveexpired: {$lt: _now}}
         ],
       };
-      var _now = Date.now();
       var reserveSet = {
         reserveby: req.params.reserveby || 'SYSTEM',
         reserveat: _now,

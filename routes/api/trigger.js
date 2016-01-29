@@ -13,7 +13,7 @@ module.exports = {
       delete filterCond.page;
       delete filterCond.limit;
 
-      filterCond.removed = filterCond.removed === true;
+      filterCond.removed = filterCond.removed === 'true';
 
       return filterObjects(Trigger, filterCond, '-updateat', req, res, next);
     },

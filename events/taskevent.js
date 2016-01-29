@@ -3,6 +3,7 @@
 
 var EventEmitter = require('events');
 var Build = require('../models').Build;
+var logger = require('../logger')('/events/task');
 
 var taskEvent = new EventEmitter();
 
@@ -16,7 +17,7 @@ taskEvent.on('create', function(task) {
       {upsert: true},
       function(err, build) {
         if (err) {
-          console.error(err);
+          logger.error(err);
         }
       });
   }

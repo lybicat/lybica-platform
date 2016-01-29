@@ -7,9 +7,9 @@ module.exports.filterObjects = function(model, filterCond, sortBy, req, res, nex
     limit: req.params.limit || 30,
     sortBy: sortBy,
     lean: true
-  }, function(err, builds) {
+  }, function(err, objs) {
     if (err) return next(err);
 
-    return res.send(builds);
+    return res.send(objs);
   });
 }

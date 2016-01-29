@@ -37,7 +37,7 @@ AgentInst.prototype.disconnect = function() {
     if (err) console.log('failed to disconnect agent');
   });
 
-  Task.where({agent: self.ip, done: false})
+  Task.where({agent: self.ip, started: true, done: false})
     .update({done: true, doneat: Date.now(), aborted: true, abortat: Date.now(), abortby: 'agent'}, function(err, tasks) {
       if(err) console.log(err);
     })

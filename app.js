@@ -5,6 +5,7 @@ var restify = require('restify');
 var mongoose = require('mongoose');
 var config = require('./config');
 var restifyRoutes = require('restify-routes');
+var log4js = require('log4js');
 
 var server = restify.createServer({
   name: 'lybica',

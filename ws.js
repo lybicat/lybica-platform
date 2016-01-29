@@ -102,7 +102,7 @@ module.exports = function(server) {
 
     // error
     socket.on('error', function(err) {
-      logger.error(err);
+      logger.error('got error from agent "%s", error: %s', clientIp, err);
     });
 
     // forward console event to others

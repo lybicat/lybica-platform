@@ -58,5 +58,23 @@ module.exports = {
       });
     }
   },
+  '/api/trigger/:id/enable': {
+    put: function(req, res, next) {
+      Trigger.findByIdAndUpdate(req.params.id, {$set: {disabled: false}}, function(err, trigger) {
+        if (err) return next(err);
+
+        return res.send(200);
+      })
+    }
+  },
+  '/api/trigger/:id/disable': {
+    put: function(req, res, next) {
+      Trigger.findByIdAndUpdate(req.params.id, {$set: {disabled: true}}, function(err, trigger) {
+        if (err) return next(err);
+
+        return res.send(200);
+      })
+    }
+  },
 };
 

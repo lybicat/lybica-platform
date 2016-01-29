@@ -145,5 +145,73 @@ describe('/api/triggers', function() {
       });
     });
   });
+
+  it('PUT /api/trigger/:id/disable disable the enabled trigger', function(done) {
+    var trigger = new Trigger();
+    trigger.disabled = false;
+    trigger.save()
+    .then(function(t) {
+      client.put('/api/trigger/' + t._id + '/disable', function(err, req, res, obj) {
+        expect(err).to.eql(null);
+        expect(res.statusCode).to.eql(200);
+        Trigger.findOne({}, function(err, t) {
+          expect(err).to.eql(null);
+          expect(t.disabled).to.eql(true);
+          done();
+        })
+      });
+    });
+  });
+
+  it('PUT /api/trigger/:id/disable disable the disabled trigger', function(done) {
+    var trigger = new Trigger();
+    trigger.disabled = true;
+    trigger.save()
+    .then(function(t) {
+      client.put('/api/trigger/' + t._id + '/disable', function(err, req, res, obj) {
+        expect(err).to.eql(null);
+        expect(res.statusCode).to.eql(200);
+        Trigger.findOne({}, function(err, t) {
+          expect(err).to.eql(null);
+          expect(t.disabled).to.eql(true);
+          done();
+        })
+      });
+    });
+  });
+
+  it('PUT /api/trigger/:id/enable enable the disabled trigger', function(done) {
+    var trigger = new Trigger();
+    trigger.disabled = true;
+    trigger.save()
+    .then(function(t) {
+      client.put('/api/trigger/' + t._id + '/enable', function(err, req, res, obj) {
+        expect(err).to.eql(null);
+        expect(res.statusCode).to.eql(200);
+        Trigger.findOne({}, function(err, t) {
+          expect(err).to.eql(null);
+          expect(t.disabled).to.eql(false);
+          done();
+        })
+      });
+    });
+  });
+
+  it('PUT /api/trigger/:id/enable enable the enabled trigger', function(done) {
+    var trigger = new Trigger();
+    trigger.disabled = false;
+    trigger.save()
+    .then(function(t) {
+      client.put('/api/trigger/' + t._id + '/enable', function(err, req, res, obj) {
+        expect(err).to.eql(null);
+        expect(res.statusCode).to.eql(200);
+        Trigger.findOne({}, function(err, t) {
+          expect(err).to.eql(null);
+          expect(t.disabled).to.eql(false);
+          done();
+        })
+      });
+    });
+  });
 });
 

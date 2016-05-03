@@ -1,21 +1,21 @@
 /* jshint node: true */
 'use strict';
 
-var restify = require('restify');
-var mongoose = require('mongoose');
-var config = require('./config');
-var restifyRoutes = require('restify-routes');
-var log4js = require('log4js');
+const restify = require('restify');
+const mongoose = require('mongoose');
+const config = require('./config');
+const restifyRoutes = require('restify-routes');
+const log4js = require('log4js');
 log4js.configure(config.LOG4JS_SETTINGS);
 
-var logger = require('./logger')('app');
+const logger = require('./logger')('app');
 
-var server = restify.createServer({
+const server = restify.createServer({
   name: 'lybica',
   version: '1.0.0'
 });
 
-var io = require('./ws')(server.server);
+const io = require('./ws')(server.server);
 module.exports.io = io;
 
 server.use(restify.acceptParser(server.acceptable));
@@ -40,8 +40,8 @@ mongoose.connect(config.DB_URL);
 
 server.listen(config.PORT, function() {
   logger.info('%s listening at %s', server.name, server.url);
-  var CronTask = require('./cron');
-  var cron = new CronTask(60000);
+  const CronTask = require('./cron');
+  const cron = new CronTask(60000);
   logger.info('Scanning cron tasks every 60seconds');
   cron.run();
 });
